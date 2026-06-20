@@ -1,11 +1,15 @@
 import nextConfig from 'eslint-config-next';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
 
-export default [
+const eslintConfig = [
   {
     ignores: ['.next/**', 'node_modules/**', 'out/**', '.husky/**'],
   },
   ...nextConfig,
   {
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
     rules: {
       '@typescript-eslint/no-unused-vars': ['warn', {
         argsIgnorePattern: '^_',
@@ -18,3 +22,5 @@ export default [
     },
   },
 ];
+
+export default eslintConfig;
