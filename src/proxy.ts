@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const publicPaths = ['/', '/api/auth/login', '/api/auth/register', '/api/auth/logout', '/calculator', '/api/calculations'];
 const authApiPaths = ['/api/auth/login', '/api/auth/register', '/api/auth/me', '/api/auth/logout'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get('ecotrace-session')?.value;
 
