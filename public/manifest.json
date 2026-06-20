@@ -1,0 +1,21 @@
+{
+  "name": "EcoTrace - Carbon Footprint Intelligence Platform",
+  "short_name": "EcoTrace",
+  "description": "Track, reduce, and offset your carbon emissions with our interactive platform. Calculate your carbon footprint and join the fight against climate change.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#22c55e",
+  "orientation": "portrait-primary",
+  "categories": ["environment", "utilities", "lifestyle"],
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}

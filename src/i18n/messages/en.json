@@ -1,0 +1,47 @@
+{
+  "app": {
+    "name": "EcoTrace",
+    "tagline": "Carbon Intelligence",
+    "description": "Track, reduce, and offset your carbon emissions with our interactive platform."
+  },
+  "nav": {
+    "home": "Home",
+    "calculator": "Calculator",
+    "dashboard": "Dashboard",
+    "challenges": "Challenges",
+    "leaderboard": "Leaderboard",
+    "badges": "Badges"
+  },
+  "hero": {
+    "subtitle": "Carbon Footprint Intelligence Platform",
+    "title": "ECO TRACE",
+    "tagline": "TRACK · REDUCE · OFFSET",
+    "description": "Understand your impact on the planet. Calculate, track, and reduce your carbon emissions through simple actions and personalized insights.",
+    "cta": "Start Calculating",
+    "secondary": "View Dashboard"
+  },
+  "calculator": {
+    "title": "Carbon Footprint Calculator",
+    "description": "Answer a few questions about your lifestyle to calculate your annual carbon emissions. All data stays on your device.",
+    "steps": {
+      "country": "Country",
+      "electricity": "Electricity",
+      "car": "Car Fuel",
+      "transport": "Transport",
+      "flights": "Flights",
+      "diet": "Diet",
+      "waste": "Waste"
+    }
+  },
+  "dashboard": {
+    "title": "Your Dashboard",
+    "description": "Track your carbon footprint and see your impact"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "back": "Back",
+    "next": "Next"
+  }
+}
