@@ -1,96 +1,86 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono, Orbitron, Rajdhani } from 'next/font/google';
 import './globals.css';
-import { SiteHeader } from '@/components/home/SiteHeader';
-import { EcoSideNav, EcoSocialPanel } from '@/components/home/SidePanels';
-import { MobileNav } from '@/components/layout/MobileNav';
-import { Footer } from '@/components/layout/Footer';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { AuthProvider } from '@/components/AuthProvider';
-import { PwaRegister } from '@/components/PwaRegister';
-import { BackgroundImage } from '@/components/BackgroundImage';
-import { DynamicParticleBackground, DynamicEcoChatBot } from '@/components/DynamicComponents';
-import { env } from '@/lib/env';
-
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap' });
-const orbitron = Orbitron({ subsets: ['latin'], variable: '--font-orbitron', display: 'swap' });
-const rajdhani = Rajdhani({ subsets: ['latin'], variable: '--font-rajdhani', weight: ['400', '500', '600', '700'], display: 'swap' });
-
-export const metadata: Metadata = {
-  title: {
-    default: 'EcoTrace - Carbon Footprint Intelligence Platform',
-    template: '%s | EcoTrace',
-  },
-  description: 'Track, reduce, and offset your carbon emissions with our interactive platform. Calculate your carbon footprint and join the fight against climate change.',
-  keywords: ['carbon footprint', 'co2 calculator', 'climate change', 'sustainability', 'green living', 'eco-friendly', 'emissions tracker'],
-  authors: [{ name: 'EcoTrace Team', url: 'https://ecotrace.vercel.app' }],
-  robots: { index: true, follow: true },
-  openGraph: {
-    title: 'EcoTrace - Carbon Footprint Intelligence Platform',
-    description: 'Track, reduce, and offset your carbon emissions with our interactive platform.',
-    url: env.NEXT_PUBLIC_APP_URL,
-    siteName: 'EcoTrace',
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'EcoTrace - Carbon Footprint Tracker',
-    description: 'Track, reduce, and offset your carbon emissions with our interactive platform.',
-  },
-  manifest: '/manifest.json',
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/favicon.ico',
-  },
-  alternates: {
-    canonical: env.NEXT_PUBLIC_APP_URL,
-  },
-};
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import AnimatedBackground from '@/components/AnimatedBackground';
+import CanvasBackground from '@/components/CanvasBackground';
+import { GoogleProvider } from '@/components/auth/GoogleProvider';
+import { PwaInstaller } from '@/components/pwa/PwaInstaller';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export const viewport: Viewport = {
-  themeColor: '#22c55e',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  themeColor: '#22c55e',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable} ${orbitron.variable} ${rajdhani.variable}`}>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="application-name" content="EcoTrace" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="EcoTrace" />
-        <meta name="mobile-web-app-capable" content="yes" />
-      </head>
-      <body className="min-h-screen text-white antialiased">
-        <AuthProvider>
-          <PwaRegister />
-          <BackgroundImage />
-          <DynamicParticleBackground />
-          <SiteHeader />
-          <EcoSideNav />
-          <EcoSocialPanel />
-          <DynamicEcoChatBot />
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://veloragreen.com'),
+  title: {
+    default: 'VeloraGreen — Carbon Footprint Intelligence Platform',
+    template: '%s | VeloraGreen',
+  },
+  description:
+    'Track, reduce, and offset your carbon footprint with our interactive platform. Calculate your carbon emissions and join the fight against climate change.',
+  keywords: [
+    'carbon footprint',
+    'co2 calculator',
+    'climate change',
+    'sustainability',
+    'green living',
+    'eco-friendly',
+    'emissions tracker',
+    'carbon offset',
+  ],
+  authors: [{ name: 'VeloraGreen Team' }],
+  creator: 'VeloraGreen',
+  publisher: 'VeloraGreen',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+  openGraph: {
+    title: 'VeloraGreen — Carbon Footprint Intelligence Platform',
+    description: 'Track, reduce, and offset your carbon footprint with our interactive platform.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'VeloraGreen',
+    url: 'https://veloragreen.com',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'VeloraGreen Platform' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'VeloraGreen — Carbon Footprint Intelligence Platform',
+    description: 'Track, reduce, and offset your carbon footprint.',
+    images: ['/og-image.png'],
+  },
+};
 
-          <div className="flex flex-col min-h-screen" style={{ position: 'relative', zIndex: 2 }}>
-            <ErrorBoundary>
-              <main className="flex-1 pt-14 pb-16 lg:pt-[60px] lg:pb-0 lg:px-[60px]">
-                {children}
-              </main>
-            </ErrorBoundary>
-            <Footer />
-          </div>
-          <MobileNav />
-        </AuthProvider>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      </head>
+      <body className="min-h-screen flex flex-col font-inter antialiased bg-slate-950">
+        <GoogleProvider>
+          <AnimatedBackground theme="green" />
+          <CanvasBackground />
+          <Navbar />
+          <main id="main-content" className="flex-1 relative z-10" role="main">
+            {children}
+          </main>
+          <Footer />
+          <PwaInstaller />
+        </GoogleProvider>
       </body>
     </html>
   );

@@ -3,10 +3,10 @@ import { compare, hash } from 'bcryptjs';
 import { cookies } from 'next/headers';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'ecotrace-dev-secret-change-in-production-32chars'
+  process.env.JWT_SECRET || 'veloragreen-dev-secret-change-in-production-32chars'
 );
 
-const COOKIE_NAME = 'ecotrace-session';
+const COOKIE_NAME = 'veloragreen-session';
 
 export interface AuthUser {
   id: string;

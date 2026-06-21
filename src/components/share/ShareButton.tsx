@@ -17,13 +17,13 @@ export function ShareButton() {
   const exportAsImage = async () => {
     setIsExporting(true);
     try {
-      const element = document.getElementById('ecotrace-share');
+      const element = document.getElementById('veloragreen-share');
       if (!element) return;
       const canvas = await html2canvas(element, {
         backgroundColor: '#111827', scale: 2, useCORS: true, logging: false,
       });
       const link = document.createElement('a');
-      link.download = `ecotrace-report-${Date.now()}.png`;
+      link.download = `veloragreen-report-${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     } catch (error) {
@@ -37,7 +37,7 @@ export function ShareButton() {
   const exportAsPDF = async () => {
     setIsExporting(true);
     try {
-      const element = document.getElementById('ecotrace-share');
+      const element = document.getElementById('veloragreen-share');
       if (!element) return;
       const canvas = await html2canvas(element, {
         backgroundColor: '#111827', scale: 2, useCORS: true, logging: false,
@@ -47,7 +47,7 @@ export function ShareButton() {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`ecotrace-report-${Date.now()}.pdf`);
+      pdf.save(`veloragreen-report-${Date.now()}.pdf`);
     } catch (error) {
       console.error('PDF export failed:', error);
     } finally {
@@ -60,7 +60,7 @@ export function ShareButton() {
     const url = window.location.href;
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'EcoTrace - My Carbon Footprint', url });
+        await navigator.share({ title: 'VeloraGreen - My Carbon Footprint', url });
         return;
       } catch { /* user cancelled */ }
     }

@@ -90,10 +90,10 @@ export const AVERAGES = {
 };
 
 export const APP_CONFIG = {
-  name: 'EcoTrace',
+  name: 'VeloraGreen',
   tagline: 'Track Your Carbon Footprint',
   description: 'Understand, reduce, and offset your carbon emissions with our interactive platform',
-  url: 'https://ecotrace.vercel.app',
+  url: 'https://veloragreen.com',
   version: '1.0.0',
 };
 

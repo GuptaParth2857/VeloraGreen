@@ -99,7 +99,9 @@ export function SiteHeader() {
                   className="text-sm font-black text-white tracking-widest block"
                   style={{ fontFamily: 'Orbitron, monospace' }}
                 >
-                  EcoTrace
+                  VeloraGreen
+
+
                 </span>
                 <span className="text-[10px] text-cyan-400/50 tracking-[0.25em] uppercase block -mt-0.5">
                   Carbon Intelligence
@@ -188,7 +190,7 @@ export function SiteHeader() {
               className="text-sm font-black text-white tracking-widest"
               style={{ fontFamily: 'Orbitron, monospace' }}
             >
-              EcoTrace
+              VeloraGreen
             </span>
           </Link>
 

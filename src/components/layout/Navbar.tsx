@@ -33,7 +33,7 @@ export function Navbar() {
             >
               <span className="text-xl">🌍</span>
             </motion.div>
-            <span className="text-xl font-bold gradient-text">EcoTrace</span>
+            <span className="text-xl font-bold gradient-text">VeloraGreen</span>
           </Link>
 
           {/* Desktop Navigation */}

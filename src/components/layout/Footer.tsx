@@ -64,7 +64,7 @@ export function Footer() {
                   className="text-base font-black text-white tracking-widest"
                   style={{ fontFamily: 'Orbitron, monospace' }}
                 >
-                  EcoTrace
+                  VeloraGreen
                 </div>
                 <div className="text-[9px] text-cyan-400/50 tracking-[0.25em] uppercase -mt-0.5">
                   Carbon Intelligence
@@ -159,7 +159,7 @@ export function Footer() {
             className="text-[10px] text-white/25 tracking-wider"
             style={{ fontFamily: 'JetBrains Mono, monospace' }}
           >
-            © 2024 EcoTrace. Building a sustainable future.
+            © 2024 VeloraGreen. Building a sustainable future.
           </p>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-green-400/60 animate-pulse" />

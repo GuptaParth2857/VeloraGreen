@@ -6,7 +6,7 @@ const authApiPaths = ['/api/auth/login', '/api/auth/register', '/api/auth/me', '
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionCookie = request.cookies.get('ecotrace-session')?.value;
+  const sessionCookie = request.cookies.get('veloragreen-session')?.value;
 
   // Allow auth API routes and public pages
   if (authApiPaths.some(p => pathname.startsWith(p)) || publicPaths.some(p => pathname === p)) {

@@ -4,12 +4,12 @@ import { ChallengeState, DEFAULT_CHALLENGE_STATE } from '@/types/challenges';
 import { UserSettings, DEFAULT_SETTINGS } from '@/types/common';
 
 const STORAGE_KEYS = {
-  CALCULATIONS: 'ecotrace-calculations',
-  CURRENT: 'ecotrace-current',
-  BADGES: 'ecotrace-badges',
-  CHALLENGES: 'ecotrace-challenges',
-  SETTINGS: 'ecotrace-settings',
-  ONBOARDING: 'ecotrace-onboarding',
+  CALCULATIONS: 'veloragreen-calculations',
+  CURRENT: 'veloragreen-current',
+  BADGES: 'veloragreen-badges',
+  CHALLENGES: 'veloragreen-challenges',
+  SETTINGS: 'veloragreen-settings',
+  ONBOARDING: 'veloragreen-onboarding',
 } as const;
 
 export class StorageAdapter {

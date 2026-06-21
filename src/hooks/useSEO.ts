@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 export function useSEO(title: string, description?: string) {
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = `${title} | EcoTrace`;
+    document.title = `${title} | VeloraGreen`;
 
     const metaDescription = document.querySelector('meta[name="description"]');
     const originalDescription = metaDescription?.getAttribute('content');

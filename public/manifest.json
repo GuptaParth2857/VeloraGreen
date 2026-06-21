@@ -1,6 +1,6 @@
 {
-  "name": "EcoTrace - Carbon Footprint Intelligence Platform",
-  "short_name": "EcoTrace",
+  "name": "VeloraGreen - Carbon Footprint Intelligence Platform",
+  "short_name": "VeloraGreen",
   "description": "Track, reduce, and offset your carbon emissions with our interactive platform. Calculate your carbon footprint and join the fight against climate change.",
   "start_url": "/",
   "display": "standalone",

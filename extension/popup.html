@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeloraGreen EcoScore</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 360px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a1612;
+      color: #f8fafc;
+      padding: 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .logo {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    h1 { font-size: 16px; font-weight: 800; }
+    .subtitle { font-size: 11px; color: #94a3b8; margin-top: -2px; }
+    .score-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .score { font-size: 48px; font-weight: 900; margin: 8px 0; }
+    .score-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+    .grade-A { color: #22c55e; }
+    .grade-B { color: #84cc16; }
+    .grade-C { color: #eab308; }
+    .grade-D { color: #f97316; }
+    .grade-F { color: #ef4444; }
+    .details {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .detail-row {
+      display: flex; justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    .detail-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .label { color: #94a3b8; }
+    .value { font-weight: 600; }
+    .tips {
+      background: rgba(34,197,94,0.05);
+      border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .tips h3 { font-size: 12px; color: #22c55e; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .tips p { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white; border: none; border-radius: 10px;
+      padding: 10px 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      margin-top: 12px; width: 100%; justify-content: center;
+    }
+    .footer { text-align: center; font-size: 10px; color: #475569; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">🌍</div>
+    <div>
+      <h1>VeloraGreen</h1>
+      <p class="subtitle">Website EcoScore</p>
+    </div>
+  </div>
+
+  <div class="score-card" id="scoreCard">
+    <div class="score-label">Estimated Carbon Impact</div>
+    <div class="score grade-C" id="scoreDisplay">---</div>
+    <div id="scoreDescription" style="font-size: 13px; color: #94a3b8;">Analyzing...</div>
+  </div>
+
+  <div class="details" id="detailsSection">
+    <div class="detail-row">
+      <span class="label">Page Size</span>
+      <span class="value" id="pageSize">-</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Requests</span>
+      <span class="value" id="requests">-</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Data Transfer</span>
+      <span class="value" id="dataTransfer">-</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">CO₂ per Visit</span>
+      <span class="value" id="co2PerVisit">-</span>
+    </div>
+  </div>
+
+  <div class="tips" id="tipsSection">
+    <h3>💡 Green Tip</h3>
+    <p id="tipText">Loading...</p>
+  </div>
+
+  <a href="https://veloragreen.com/calculator" class="btn" target="_blank">
+    Calculate Your Footprint →
+  </a>
+
+  <div class="footer">Powered by VeloraGreen • Track. Reduce. Offset.</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

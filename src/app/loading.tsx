@@ -1,21 +1,9 @@
-export default function RootLoading() {
+export default function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <div
-          className="w-12 h-12 mx-auto mb-4 rounded-sm animate-spin"
-          style={{
-            border: '2px solid rgba(6,182,212,0.15)',
-            borderTopColor: '#06b6d4',
-            background: 'rgba(3,7,18,0.3)',
-          }}
-        />
-        <p
-          className="text-[10px] tracking-[0.4em] text-cyan-400/60 uppercase"
-          style={{ fontFamily: 'Orbitron, monospace' }}
-        >
-          Loading...
-        </p>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" />
+        <p className="text-slate-400 text-sm font-medium">Loading...</p>
       </div>
     </div>
   );
