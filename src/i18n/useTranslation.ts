@@ -30,14 +30,15 @@ function getNestedValue(obj: Record<string, any>, path: string): string {
 }
 
 export function useTranslation() {
-  const [locale, setLocale] = useState<string>('en');
+  const [locale, setLocale] = useState<string>(() => {
+    if (typeof window === 'undefined') return 'en';
+    const saved = localStorage.getItem('veloragreen-locale');
+    if (saved) return saved;
+    return navigator.language?.startsWith('hi') ? 'hi' : 'en';
+  });
 
   useEffect(() => {
     loadMessages();
-
-    const saved = localStorage.getItem('veloragreen-locale') || 'en';
-    const browserLang = navigator.language?.startsWith('hi') ? 'hi' : 'en';
-    setLocale(saved || browserLang);
   }, []);
 
   const t = useCallback((key: string): string => {

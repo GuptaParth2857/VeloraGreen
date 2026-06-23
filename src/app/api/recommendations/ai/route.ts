@@ -1,8 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { sanitizeContextValue } from '@/lib/sanitize';
+import { rateLimitMiddleware, getClientIp } from '@/lib/rate-limit';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const AI_RATE_LIMIT = 10;
+const AI_RATE_WINDOW_MS = 60000;
+
+const ALLOWED_CATEGORIES = new Set([
+  'electricity', 'carFuel', 'flights', 'diet', 'waste', 'publicTransport', 'general'
+]);
+
+const VALID_PRIORITIES = new Set(['high', 'medium', 'low']);
 
 function getFallbackRecommendations(breakdown: Record<string, number>) {
   const recs: Array<{
@@ -60,34 +70,82 @@ function getFallbackRecommendations(breakdown: Record<string, number>) {
   return recs;
 }
 
+function validateBreakdown(value: unknown): value is Record<string, number> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0) return false;
+  for (const [k, v] of entries) {
+    if (typeof k !== 'string' || k.length > 50) return false;
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 1000000) return false;
+  }
+  return true;
+}
+
+function validateRecommendationShape(rec: unknown): boolean {
+  if (!rec || typeof rec !== 'object') return false;
+  const r = rec as Record<string, unknown>;
+  return (
+    typeof r.title === 'string' && r.title.length <= 200 &&
+    typeof r.description === 'string' && r.description.length <= 1000 &&
+    typeof r.category === 'string' && ALLOWED_CATEGORIES.has(r.category) &&
+    typeof r.saving === 'number' && Number.isFinite(r.saving) && r.saving >= 0 &&
+    typeof r.priority === 'string' && VALID_PRIORITIES.has(r.priority)
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    const rateLimitResult = rateLimitMiddleware(`recommendations:${ip}`, AI_RATE_LIMIT, AI_RATE_WINDOW_MS);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please slow down.' },
+        { status: 429, headers: rateLimitResult.headers }
+      );
+    }
+
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: rateLimitResult.headers });
     }
 
     const { breakdown, total, lifestyle } = await request.json();
 
-    if (!breakdown || typeof breakdown !== 'object') {
-      return NextResponse.json({ error: 'Carbon breakdown data is required' }, { status: 400 });
+    if (!validateBreakdown(breakdown)) {
+      return NextResponse.json(
+        { error: 'Invalid carbon breakdown data' },
+        { status: 400, headers: rateLimitResult.headers }
+      );
     }
 
+    if (total !== undefined && total !== null && (typeof total !== 'number' || !Number.isFinite(total) || total < 0 || total > 1000000)) {
+      return NextResponse.json(
+        { error: 'Invalid total value' },
+        { status: 400, headers: rateLimitResult.headers }
+      );
+    }
+
+    const safeBreakdown = sanitizeContextValue(breakdown) as Record<string, number>;
+    const safeLifestyle = lifestyle ? sanitizeContextValue(lifestyle) : null;
+
     if (!GEMINI_API_KEY) {
-      const fallback = getFallbackRecommendations(breakdown);
-      return NextResponse.json({ recommendations: fallback, source: 'rule-based' });
+      const fallback = getFallbackRecommendations(safeBreakdown);
+      return NextResponse.json(
+        { recommendations: fallback, source: 'rule-based' },
+        { headers: rateLimitResult.headers }
+      );
     }
 
     try {
       const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-      const prompt = `You are a carbon footprint expert. Given this user's carbon data, provide 3 personalized recommendations.
+      const prompt = `You are a carbon footprint expert. Your ONLY role is to provide carbon reduction recommendations.
 
 Carbon Breakdown (kg/year):
-${Object.entries(breakdown).map(([k, v]) => `- ${k}: ${v} kg`).join('\n')}
-Total: ${total} kg/year
-${lifestyle ? `Lifestyle: ${JSON.stringify(lifestyle)}` : ''}
+${Object.entries(safeBreakdown).map(([k, v]) => `- ${k}: ${v} kg`).join('\n')}
+Total: ${total ?? 'N/A'} kg/year
+${safeLifestyle ? `Lifestyle: ${JSON.stringify(safeLifestyle)}` : ''}
 
 For each recommendation, provide:
 1. title - Short action-oriented title
@@ -102,13 +160,20 @@ Return ONLY valid JSON array format, no markdown:
       const result = await model.generateContent(prompt);
       const text = result.response.text();
       const cleaned = text.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-      const recommendations = JSON.parse(cleaned);
+      const parsed = JSON.parse(cleaned);
+      const recommendations = Array.isArray(parsed) ? parsed.filter(validateRecommendationShape) : [];
 
-      return NextResponse.json({ recommendations, source: 'gemini-ai' });
+      return NextResponse.json(
+        { recommendations, source: 'gemini-ai' },
+        { headers: rateLimitResult.headers }
+      );
     } catch (aiError) {
       console.error('[Gemini API Error]', aiError);
-      const fallback = getFallbackRecommendations(breakdown);
-      return NextResponse.json({ recommendations: fallback, source: 'rule-based' });
+      const fallback = getFallbackRecommendations(safeBreakdown);
+      return NextResponse.json(
+        { recommendations: fallback, source: 'rule-based' },
+        { headers: rateLimitResult.headers }
+      );
     }
   } catch (error) {
     console.error('[AI Recommendations Error]', error);

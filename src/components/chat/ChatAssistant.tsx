@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Sparkles, Loader2 } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, Loader2, Mic, MicOff } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 
 interface ChatMessage {
@@ -24,16 +24,11 @@ export default function ChatAssistant() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentResult } = useAppStore();
-
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+  const recognitionRef = useRef<{ stop: () => void } | null>(null);
+  const sendMessageRef = useRef<((text: string) => void) | null>(null);
 
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -63,6 +58,56 @@ export default function ChatAssistant() {
       setIsLoading(false);
     }
   }, [isLoading, currentResult]);
+
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  }, [sendMessage]);
+
+  const toggleVoice = useCallback(() => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SR = (window as unknown as Record<string, new () => { start: () => void; stop: () => void; lang: string; interimResults: boolean; continuous: boolean; onresult: ((event: { results: Array<Array<{ transcript: string }>> }) => void) | null; onerror: (() => void) | null; onend: (() => void) | null }>).SpeechRecognition || (window as unknown as Record<string, new () => { start: () => void; stop: () => void; lang: string; interimResults: boolean; continuous: boolean; onresult: ((event: { results: Array<Array<{ transcript: string }>> }) => void) | null; onerror: (() => void) | null; onend: (() => void) | null }>).webkitSpeechRecognition;
+    if (!SR) {
+      setInput('[Voice input not supported in this browser]');
+      return;
+    }
+
+    const recognition = new SR();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+      setIsListening(false);
+      sendMessageRef.current?.(transcript);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }, [isListening]);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   return (
     <>
@@ -157,6 +202,16 @@ export default function ChatAssistant() {
                   className="flex-1 bg-transparent text-sm text-white placeholder-white/30 outline-none"
                 />
                 <button
+                  onClick={toggleVoice}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                    isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-white/10 hover:bg-white/20 text-white/60'
+                  }`}
+                  aria-label={isListening ? 'Stop recording' : 'Voice input'}
+                  title={isListening ? 'Stop recording' : 'Voice input'}
+                >
+                  {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                </button>
+                <button
                   onClick={() => sendMessage(input)}
                   disabled={!input.trim() || isLoading}
                   className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center disabled:opacity-30 transition-opacity hover:from-green-500 hover:to-emerald-500"
@@ -164,7 +219,9 @@ export default function ChatAssistant() {
                   <Send className="w-3.5 h-3.5 text-white" />
                 </button>
               </div>
-              <p className="text-[9px] text-white/20 text-center mt-1.5">Powered by Google Gemini AI</p>
+              <p className="text-[9px] text-white/20 text-center mt-1.5">
+                {isListening ? '🎤 Listening...' : 'Powered by Google Gemini AI'}
+              </p>
             </div>
           </motion.div>
         )}

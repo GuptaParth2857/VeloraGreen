@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const publicPaths = ['/', '/api/auth/login', '/api/auth/register', '/api/auth/logout', '/calculator', '/api/calculations'];
 const authApiPaths = ['/api/auth/login', '/api/auth/register', '/api/auth/me', '/api/auth/logout'];
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get('veloragreen-session')?.value;
 

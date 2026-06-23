@@ -6,7 +6,10 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useAppStore } from '@/store/useAppStore';
 import { FiBarChart2, FiArrowRight } from 'react-icons/fi';
-import { CarbonMap } from '@/components/CarbonMap';
+const GoogleCarbonMap = dynamic(() => import('@/components/carbon-map/GoogleCarbonMap').then(m => m.GoogleCarbonMap), {
+  ssr: false,
+  loading: () => <div className="w-full h-[450px] bg-white/5 animate-pulse rounded-2xl flex items-center justify-center"><div className="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin" /></div>,
+});
 
 const DashboardView = dynamic(() => import('@/components/dashboard/DashboardView').then(m => m.DashboardView), {
   ssr: false,
@@ -70,10 +73,10 @@ export default function DashboardPage() {
           <ChartsSection />
 
           {currentResult && (
-            <CarbonMap
+            <GoogleCarbonMap
               totalKg={currentResult.total}
               country={currentResult.country}
-              breakdown={currentResult.breakdown}
+              breakdown={currentResult.breakdown as unknown as Record<string, number>}
             />
           )}
 

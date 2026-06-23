@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify, createRemoteJWKSet } from 'jose';
 import { getDb } from '@/lib/server/db';
 import { createSession } from '@/lib/auth';
+
+const GOOGLE_CERTS_URL = new URL('https://www.googleapis.com/oauth2/v3/certs');
+const googleJWKS = createRemoteJWKSet(GOOGLE_CERTS_URL);
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,12 +13,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Google credential is required' }, { status: 400 });
     }
 
-    const tokenParts = credential.split('.');
-    if (tokenParts.length !== 3) {
-      return NextResponse.json({ error: 'Invalid credential format' }, { status: 400 });
+    const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    if (!GOOGLE_CLIENT_ID) {
+      return NextResponse.json({ error: 'Google OAuth is not configured' }, { status: 500 });
     }
 
-    const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString('utf-8'));
+    let payload: { sub?: string; email?: string; name?: string; picture?: string };
+    try {
+      const result = await jwtVerify(credential, googleJWKS, {
+        issuer: ['https://accounts.google.com', 'accounts.google.com'],
+        audience: GOOGLE_CLIENT_ID,
+      });
+      payload = result.payload as typeof payload;
+    } catch {
+      return NextResponse.json({ error: 'Invalid or expired Google credential' }, { status: 401 });
+    }
+
     const { sub: googleId, email, name, picture } = payload;
 
     if (!email) {

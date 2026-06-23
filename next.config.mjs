@@ -10,6 +10,7 @@ const securityHeaders = [
   { key: 'Referrer-Policy', value: 'origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
   { key: 'X-XSS-Protection', value: '1; mode=block' },
+  { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.stripe.com https://*.resend.com; frame-src 'self' https://accounts.google.com;" },
 ];
 
 const nextConfig = {
